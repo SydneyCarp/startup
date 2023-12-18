@@ -1657,4 +1657,1463 @@ Block comment
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Final Notes:
+URL - uniform resource locator, represents the location of a web resource (web page, font, image, video stream database record, or JSON object. can also be ephemeral like a visitation counter or gaming session)
+
+URL syntax:
+- https://byu.edu:443/cs/260/student?filter=accepted#summary
+- <scheme>://<domain name>:<port>/<path>?<parameters>#<anchor>
+- Scheme, https, the protocol required to ask for the resource. For web applications, this is usually HTTPS. But it could be any internet protocol such as FTP or MAILTO
+- Domain name, byu.edu, The domain name that owns the resource represented by the URL
+- Port, 3000, The port specifies the numbered network port used to connect to the domain server. Lower number ports are reserved for common internet protocols, higher number ports can be used for any purpose. The default port is 80 if the scheme is HTTP, or 443 if the scheme is HTTPS
+- Path, /school/byu/user/8014, The path to the resource on the domain. The resource does not have to physically be located on the file system with this path. It can be a logical path representing endpoint parameters, a database table, or an object schema
+- Parameters, filter=names&highlight=intro,summary, The parameters represent a list of key value pairs. Usually it provides additional qualifiers on the resource represented by the path. This might be a filter on the returned source or how to highlight the resource. The parameters are also sometimes called the query string
+- Anchor, summary, The anchor usually represents a sub-location in the resource. For HTML pages this represents a request for the browser to automatically scroll to the element with an ID that matches the anchor. The anchor is also sometimes called the hash, or fragment ID
+- Previously a username and password would be before the domain name, but this is deprecated for security reasons
+- URL, URN, and URI - Uniform Resource Name, unique resource name that does not specify location information, book URN could be urn:isbn:10,0765350386. Uniform Resource Identifier, general resource identifier that could refer to a URL or URN
+
+
+  Ports: allow a single device to support multiple protocols (HTTP, HTTPS, FTP, or SSH) as well as different types of services (search, document, or authentication).
+  - SSH port - 22
+  - HTTPS port - 443
+  - IANA - internet governing body, defines the standard usage for port numbers. Ports from 0 to 1023 represent standard protocols. Web service should avoid these ports unless it is providing the protocol represented by the standard. Ports from 1024 to 49151 represetn ports that have been assigned to requesting entities. It is very common for these ports to be used by services running internally on a device. Ports from 49152 to 65535 are considered dynamic and are used to create dynamic connections to a device.
+
+Other ports:
+- 20 - FTP, File Transfer Protocol, for data transfer
+- 22 - SSH, Secure Shell, for connecting to remote devices
+- 25 - SMTP, Simple Mail Transfor Protocol, for sending email
+- 53 - DNS, Domain Name System, for looking up IP addresses
+- 80 - HTTP, Hypertext Transfer Protocol, for retrieving email
+- 110 - POP3, Post Office Protocol, for retrieving email
+- 123 - NTP, Network Time Protocol, for managing time
+- 161 - SNMP, Simple Network Management Protocol, for managing network devices such as routers or printers
+- 194 - IRC, Internet Relay Chat, for chatting
+- 443 - HTTPS, HTTP Secure, for secure web requests
+
+
+HTTP: Hypertext Ransfor Protocol is how the web talks. Web browsers make a request to a web server through the HTTP protocol. Web clients exchange HTTP requests and responsesCan see these requests and responses in a debugger or by using console tools like curl.
+- Curl - curl -v -s http://info.cern.ch/hypertext/WWW/Helping.html
+- Request - GET /hypertext/WWW/Helping.html HTTP/1.1
+            Host: info.cern.ch
+            Accept: text/html
+- HTTP request syntax: <verb> <url path, parameters, anchor> <version>
+                        [<header key: value>]*
+                        [
+
+                          <body>
+                        ]
+  - First line of HTTP request contains the verb of the request, followed by the path, parameters, and anchor of the URL, and finally the version of HTTP being used. The following lines are optional headers that are defined by key value parins. After the headers you have an optional body. The body start is delimited from the headers with two new lines.
+
+- Response - HTTP/1.1 200 OK
+              Date: Tue, 06 Dec 2022 21:54:42 GMT
+              Server: Apache
+              Last-Modified: Thu, 29 Oct 1992 11:15:20 GMT
+              ETag: "5f0-28f29422b8200"
+              Accept-Ranges: bytes
+              Content-Length: 1520
+              Connection: close
+              Content-Type: text/html
+
+              <TITLE>Helping -- /WWW</TITLE>
+              <NEXTID 7>
+              <H1>How can I help?</H1>There are lots of ways you can help if you are interested in seeing
+              the <A NAME=4 HREF=TheProject.html>web</A> grow and be even more useful...
+  - HTTP response syntax - <version> <status code> <status string>
+                            [<header key: value>]*
+                            [
+
+                              <body>
+                            ]
+- Difference between request and response is that the first line represents the version and status of the response
+
+Verbs:
+- GET - Get the requested resourse. This can represent a request to get a single resource or a resource representing a list of resources.
+- POST - Create a new resource. The body of the request contains the resource. The response should include a unique ID of the newly created resource.
+- PUT - Update a resource. Either the URL path, HTTP header, or body must contain the unique ID of the resource being updated. The body of the request should contain the updated resource. The body of the response may contain the resulting updated resource.
+- DELETE - Delete a resource. Either the URL path or HTTP header must contain the unique ID of the resource to delete.
+- OPTIONS - Get metadata about a resource. Usually only HTTP headers are returened. The resource itself is not returned.
+
+Status Codes: Codes are partitioned into five blocks
+- 1xx - Informational
+- 2xx - Success
+- 3xx - Redirect to some other location, or that the previously cached resource is still valid
+- 4xx - Client errors. The request is invalid
+- 5xx - Server errors. The request cannot be satisfied due to an error on the server
+
+More common codes, MDN documentation has full description
+- 100, Continue, the service is working on the request
+- 200, Success, the requested resource was found and returned as appreopriate
+- 201, Created, the request was successful and a new resource was created
+- 204, No Content, the request was successful but no resource is returned
+- 304, Not Modified, the cached version of the resource is still valid
+- 307, Permanent redirect, the resource is no longer at the requested location. The new location is specified in the response location header
+- 308, Temporary redirect, the resource is temporarily located at a different location. The temporary location is specified in the response location header
+- 400, Bad request, the request was maformed or invalid
+- 401, Unauthorized, the request did not provide a valid authentication token
+- 403, Forbidden, the provided authentication token is not authorized for the resource
+- 404, Not found, an unknown resource was requested
+- 408, Request timeout, the request takes too long
+- 409, Conflict, the provided resource represents an out of date version of the resource
+- 418, I'm a teapot, the service refuses to brew coffee in a teapot
+- 429, Too many request, the client is making too many requests in too short of a time period
+- 500, Internal server error, the server failed to properly process the request
+- 503, Service unavailable, the server is temporarily down, the client should try aain with an exponential back off
+
+Headers: HTTP headers specify metadata about a request or response. This includes things like how to handle security, caching, data formats, and cookies.
+- Authorization, Bearer bGciOiJIUzl1Nilsl, a token that authorized the user making the request
+- Accept, image/*, the format the client accepts. This may include wildcards
+- Content-Type, text.html; charset=utf-8, the format of the content being sent. These are described using the standard MIME types
+- Cookie, SessionID=39s8cgj34; csrftoken=9dck2, Key value pairs that are generated by the server and stored on the client
+- Host, info.cern.ch, the domain name of the server. This is requred in all requests
+- Origin, cs260.click, identifies the origin that caused the request. A host may only allow requests from specific origins
+- Access-Control-Allow-Origin, https://cs260.click, server response of what origins can make a request. This may include a wildcard
+- Content-Length, 368, The number of bytes contained in the response
+- Cache-Control, public, max-age=604800, tells the client how it can cache the response
+- User-Agent, Mozilla.5.0 (Macintosh), the client application making the request
+
+Body: Format of the body of an HTTP request of response is defined by the Content-Type header. (HTML text - text/html, binary image format - image/png, JSON - application/json, or JavaScript - text/javascript). Client can specify what formats it accepts using the accept header.
+
+Cookies: Generated by a server and passed to the client as an HTTP header. HTTP itself is stateless, so one HTTP request does not know anything about a previous or future request. Server and client use cookies to track state across requests
+- Sent - HTTP/2 200
+          Set-Cookie: myAppCookie=tasty; SameSite=Strict; Secure; HttpOnly
+- Client caches cookies and returns it as an HTTP header back to the server of subsequent reuests - HTTP/2 200
+          Cookie: myAppCookie=tasty
+- Allows server to remember things like language preference of the user, or user's authentication credentials. Server can also use cookies to track, and share everything a user does. There is nothing inherently evil about cookes, some web applications use them as a means to violate a user's privacy or inappropriately monetize their data
+
+HTTP Versions:
+- 1990, HTTP0.9, one line, no version, only get
+- 1996, HTTP1, get/post, header, status codes, content-type
+- 1997, HTTP1.1, put/patch/delete/options, persistent connection
+- 2015, HTTP2, multiplex, server push, binary representation
+- 2022, HTTP3, QUIC for transport protocol, always encrypted
+
+
+SOP and CORS: Same Origin Policy and Cross Origin Resource Sharing. Hackers used to request information with a hacker website (byu.iinstructure.com). The hacker could requet anything from the real website then make itself appear and act just like the real website. It would request images, html, and login endpoints from the course's website and display the results on the hacker website. SOP and CORS were create to combat this.
+- SOP - only allows JavaScript to make request to a domain if it is the same domain that the user is current viewing. A request from the hacker website for service enpoints that are made to the real site would fail because the domains do not match. This provides security but complicates the building process of web applications. Building a service that any web application can user violates the SOP and fail. This is why CORS was invented
+- CORS - allows the client (browser) to specify the origin of a request and then let the server respond with what origins are allowed. The server may say that all origins are allowed, for example if they are a general purpose image provider, or only a specific origin is allowed, for example if they are a bank's authentication service. If the server doesn't specify what origin is allowed then the browser assumes that it must be the same origin
+- Hacker HTTP request example: GET /api/auth/login HTTP/2
+                                Host: byu.instructure.com
+                                Origin: https://byu.iinstructure.com
+- Response: HTTP/2 200 OK
+            Access-Control-Allow-Origin: https://byu.instructure.com
+- The browser would see that the actual origin does not match the allowed origin so the browser blocks the response and generates an error
+- With CORS, the browser is protecting the user from accessing the websites's authentication endpoint from the wrong origin. CORS is only meant to alert the user that something nefarious is being attempted. A hacker can still proxy request through their own server and completely ignore the Acess-Control-Allow-Origin header. Websites need to implement its own precautions to stop a hacker from using its services inappropriately
+
+
+
+Fetch: Also called fetch API, is the preferred way to make HTTP request. Fetch funtion is built into the browser's JavaScript runtime. You can call it from JavaScript code running in a browser. 
+- Basic use - takes a URL and returns a promise
+- Promise - a then function that takes a callback function that is asynchronously called what the requested URL content is obtained. If the returned content is of type application/json, you can use the json function on the response object to convert it to a JavaScript object
+- Ex: fetch('https://api.quotable.io/random')
+        .then((response) => response.json())
+        .then((jsonResponse) => {
+          console.log(jsonResponse);
+        });
+- Response: {
+              content: 'Never put off till tomorrow what you can do today.',
+              author: 'Thomas Jefferson',
+            };
+- POST request, populate the options parameter with the HTTP method and headers
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: 'test title',
+        body: 'test body',
+        userId: 1,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then((response) => response.json())
+      .then((jsonResponse) => {
+        console.log(jsonResponse);
+      });
+
+Endpoints: A webservice is usually divided into multiple service endpoints. Each endpoint provides a single functional purpose. Service endpoints are often called an API (Application Programming Interface). This is a throwback to old desktop applications and the programming interfaces that they exposed. Sometimes the term API refers to the entire collection of endpoints, and sometimes for just a single endpoint
+
+Endpoints should be:
+- Grammatical - With HTTP everything is a resource (like noun or object). You act on the resource with an HTTP verb. For example, you might have an order resource that is contained in a store resource. Tou then create, get, update, and delete order resources on the store resource
+- Readable - The resource you are referencing with an HTTP request should be clearly readable in the URL path. For example, an order resource might contain the path to both the order and store where the order resource resides: /store/provo/order/28502. This makes it easier to remember how to use the endpoint because it is human readable
+- Discoverable - As you expose resources that contain other resources you can provide the endpoints for the aggregated resources. This makes it so someone using your endpoints only need to remember the top level endpoint and then they can discover everything else. For example, if you have a store endpoint that returns information about a store you can include an endpoint for working with a store in the response. ex:
+    GET /store/provo  HTTP/2
+
+  {
+    "id": "provo",
+    "address": "Cougar blvd",
+    "orders": "https://cs260.click/store/provo/orders",
+    "employees": "https://cs260.click/store/provo/employees"
+  }
+- Compatible - When you build your endpoints you want to make it so that you can add new functionality without breaking existing clients. Usually this means that the clients of your service endpoints should ignore anything that they don't understand. When making changes keep the old way until all users have upgraded. Have a reference to the old way and keep compatibility with at least one previous version of the endpoint so that there is enough time for all of the clients to migrate before compatability is removed.
+- Simple - Keep endpoints focused of the primary resources of the application to help avoid the tempation to add endpoints that duplicate or create parallel access to primary resources. Writing class and sequence diagrams that outline the primary resources before coding is helpful. The resources should focus on the actual resources of the system that is being modeled. They should not focus on the data structure or devices used to host the resources. There should only be one way to act on a resource. Endpoints should only do one thing.
+- Documented - Open APU Specification is a good example of tooling that helps create, use, and maintain documentation of the service endpoints. It is highly suggested that you make use of such tools to rpovide client libraries for the endpoints and a sandbox for experimentation. Creating initial drafts of the endpoint decumentation before coding helps to clarify the design and produce a better final result. Providing access to the endpoint documenation along with the production system helps with client implementations and facilitates easier maintenance of the service.
+
+Three most common models for exposing endpoints:
+
+RPC: Remost Procedure Calls, expose service endpoints as simple function calls. When RPS is used over HTTP it usually just leverages the POST HTTP verb. The actual verb and subject of the function call is represented by the function name. For example, deleteOrder or updateOrder. The name of the function is either the entire path of the URL or a parameter in the POST body
+- POST /updateOrder HTTP/2
+  {"id": 2197, "date": "20220505"}
+- POST /rpc HTTP/2
+  {"cmd":"updateOrder", "params":{"id": 2197, "date": "20220505"}}
+- One advantage of RPC is that it maps directly to function calls that might exist within the server. This could also be condisered a disadvantage as it directly exposed the inner workings of the service, and thus creates a coupling between the endpoints and the implementation
+
+REST: Representational State Transfer, attempts to take advantage of the foundational principles of HTTP. Created by Roy Fielding, was principle author and also a contributor to the HTTP specification. REST HTTP verbs always act upon a resource. Operations on a resource impact the state of the resource as it is transferred by a REST endpoint call. This allows for the chaching functionality of HTTP to work optimally. For example, GET will always return the same resource until a PUT is executed on the resource. When PUT is used, the cached resource is replaced with the updated resource.
+- updateOrder endpoint ex.: PUT /order/2197 HTTP/2
+                            {"date": "20220505"}
+- Where the proper HTTP verb is used and the URL path uniquely identifies the resource. These small differences maximize HTTP and pays dividends by making it easy for HTTP infrastructure, such as caching, to properly work.
+- There are several other pieces of Fielding's dissertation on REST, such as hypermedia, that are often quoted as being required for a truly "restful" implementation, and these are just as often ignored
+
+GraphQL: Focuses on the manipulation of the data instead of a function call (RPC) or a resource (REST). The heart of GraphQL is a query that specifies the desired data and how it should be joined and filered. GraphQL was developed to address frustration concerning the massive number of REST, or RPC calls, that a web application client needed to make in order to support even a simple UI widget. Instead of making a call for getting a store, and then a bunch of calls for getting the store's orders and employees, GraphQL would send a single query that would request all of that information in one big JSON response. The server would examine the query, join the desired data, and then filter out anything that was not wanted.
+- Ex.: query {
+        getOrder(id: "2197") {
+          orders(filter: {date: {allofterms: "20220505"}}) {
+            store
+            description
+            orderedBy
+          }
+        }
+      }
+- Helps to remove a lot of the logic for parsing endpoints and mapping request to specific resources. Basically in GraphQL there is only one endpoint which is the query endpoint. The downside of that flexibility is that the client now has significant power to consume resources on the server. There is no clear boundary on what, how much, or how complicated the aggregation of data is. It also is difficult for the server to implement authorization rights to data as they have to be baked into the data schema. However, there are standards for how to define a complex schema. Common GraphQL packages provide support for schema implementations along with database adaptors for query support
+
+
+
+Node.js: Created in 2009 by Ryan Dahl. First successful application for deploying JavaScript outside of a browser. Often refered to as jsut Node and is currently maintained by the Open.js Foundation. Changed the JacaScript mindset from a browser technology to one that could run on the server as well. So JavaScript can power the entire technology stack. Browsers run JavaScript using a JavaScript interpreter and execution engine. For example, Chomuim based browsers all use the V8 engine created by Google. Node.js simply took the V8 engine and ran it inside of a console application. When you run a JavaScript program in Chrom or Node.js, it is V8 that reads your code and executes it. With either program wrapping V8, the result is the same.
+
+
+Express: Provides support for routing request for service endpoints, manipulating HTTP requests with JSON body content, generating HTTP responses, and using middleware to add functionality. Created by TJ Holowaychuk and is currently maintained by the Open.js Foundation. Everything in Express revolves around creating and using HTTP routing and middleware fuctions. You create in Express application be using NPM to install the Express package and then calling the express constructor to create the Express application and listen for HTTP requests on a desired port.Using the app object you can add HTTP routing and middleware functions to the application
+- Ex.: const express = require('express');
+      const app = express();
+      app.listen(8080);
+
+Defining routes: HTTP endpoints are implemented in Express by defining routes that call a function based upon an HTTP path. The Express app object supports all of the HTTP verbs as functions on the object. For example, if you want to have a route funciton that handles an HTTP GET request for the UTL path /store/provo you would call the get methof on the app.
+- Ex.: app.get('/store/provo', (req, res, next) => {
+        res.send({name: 'provo'});
+      });
+- The get function takes 2 parameters, a UTL path matching pattern, and a callback function that is invokes when the pattern matches. The path matching parameter is used to match against the URL path of an incoming HTTP request.
+- The callback function has 3 parameters that represent the HTTP request object (req), the HTTP response object (res), and the next routing function that Express exprects to be called if this routing function wants another function to generate a response.
+- The Express app compares the routing function patterns in the order that they are added to the Express app object. So if you have 2 routing functions with patterns that both match, the first one that was added will be called and given the next matching function in the next parameter.
+- For example, we hard coded the store name to be provo. A real store endpoint would allow any store name to be provided as a parameter in the path. Express supports path parameters by prefixing the parameter name with a colon (:). Express created a map of path parameters and populates it with the matching values found in the URL path. You then reference the parameters using the req.params object. Using this pattern you can rewrite the getStore endpoint as follows
+-  app.get('/store/:storeName', (req, res, next) => {
+    res.send({name: req.params.storeName});
+  });
+- If we run out JavaScript using node we can see the result when we make an HTTP request using curl
+-  ➜ curl localhost:8080/store/orem
+  {"name":"orem"}
+- If you wanted an endpoint that used the POST or DELETE HTTP verb then you just use the post or delete function on the Express app object.
+- The route path can also include a limited wildcard syntax or even full regular expressions in path pattern. Examples of route functions using different pattern syntax:
+- // Wildcard - matches /store/x and /star/y
+  app.put('/st*/:storeName', (req, res) => res.send({update: req.params.storeName}));
+
+- // Pure regular expression
+  app.delete(/\/store\/(.+)/, (req, res) => res.send({delete: req.params[0]}));
+- Notice that in these examples the next parameter was omitted. Since we are not calling next we do not need to include it as a parameter. However, if you do not call enct then no following middleware functions will be invoked for the request
+
+
+Using middleware:The standard Mediator/Middleware design pattern has 2 pieces of functionality. The middleware represents componentized pieces of functionality. The mediator loads the middleware components and determines their order of execution. When a request comes to the mediator it then passes the request around to the middleware components. Following this pattern, Express is the mediator, and middleware functions are the middleware components.
+- Express comes with a standard set of middleware functions. These provide functionality like routing, authentication, CORS,sessions, serving static web files, cookies, and logging. Some middleware functions are provided by default, and other ones must be installed using NPM before you can use them. You can also write you own middleware functions and use them with Express.
+- A middleware function looks very similar to a routing function. That is because routing functions are also middleware functions. The only difference is that routing functions are only called if the associated pattern matches. Middleware functions are always called for every HTTP request unless a preceding middleware function does not call next. A middleware function has the following pattern:
+- function middlewareName(req, res, next)
+- The middleware function parameters represent the HTTP request object (req), the HTTP response object (res), and the next middleware function to pass processing to. You should usually call the nect function after completing processing so that the next middleware function can execute.
+
+Creating your own middleware: Can create a function that logs out of the URL of the request and then passes on  processing to the next middleware function:
+- app.use((req, res, next) => {
+    console.log(req.originalUrl);
+    next();
+  });
+- Remember that the order that you add your middleware to the Express app object controls the order that the middleware functions are called. Any middleware that does not call the next function after doing its processing, stops the middleware chain from continuing.
+
+Builtin middleware: Example of using the static middleware functions. This middleware responds with static files, found in a given directory, that match the request URL:
+- app.use(express.static('public'));
+- If you create a subdirectory in your project directory and name it public you can serve up any static content that you would like. For example, you could create an index.html file that is the default content for you web service. Then when you call your web service without any path the index.html file will be returned.
+
+Third party middleware: You can also use third party middleware functions by using NPM to install the package and including the package in your JavaScript with the require function. The following uses the cookie-parser package to simplify the generation and access of cookies.
+- ➜ npm install cookie-parser
+- const cookieParser = require('cookie-parser');
+
+  app.use(cookieParser());
+
+  app.post('/cookie/:name/:value', (req, res, next) => {
+    res.cookie(req.params.name, req.params.value);
+    res.send({cookie: `${req.params.name}:${req.params.value}`});
+  });
+
+  app.get('/cookie', (req, res, next) => {
+    res.send({cookie: req.cookies});
+  });
+- It is common for middleware functions to add fields and functions to the the req and res objects so that other middleware can access the functionality they provice. You see this happening when the cookie-parser middleware adds the req.cookies object for reading cookies, and also adds the res.cookie function in order to make it easy to add a cookie to a response
+
+Error handling middleware: You can also add middleware for handling errors that occur. Error middleware looks similar to other middleware functions, but it takes an additional err parameter that contains the error
+- function errorMiddlewareName(err, req, res, next)
+- If you want to add a simple error handler for anything that might go wrong while processing HTTP requests you could add the following
+- app.use(function (err, req, res, next) {
+    res.status(500).send({type: err.name, message: err.message});
+  });
+- We can test that out error middleware is getting used by adding a new endpoint that generates an error
+- app.get('/error', (req, res, next) => {
+    throw new Error('Trouble in river city');
+  });
+- Now if we use curl to call our error endpoint we can see that the response comes from the error middleware
+- ➜ curl localhost:8080/error
+  {"type":"Error","message":"Trouble in river city"}
+
+Full example of web service built with Express:
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+// Third party middleware - Cookies
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({cookie: `${req.params.name}:${req.params.value}`});
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({cookie: req.cookies});
+});
+
+// Creating your own middleware - logging
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+
+// Built in middleware - Static file hosting
+app.use(express.static('public'));
+
+// Routing middleware
+app.get('/store/:storeName', (req, res) => {
+  res.send({name: req.params.storeName});
+});
+
+app.put('/st*/:storeName', (req, res) => res.send({update: req.params.storeName}));
+
+app.delete(/\/store\/(.+)/, (req, res) => res.send({delete: req.params[0]}));
+
+// Error middleware
+app.get('/error', (req, res, next) => {
+  throw new Error('Trouble in river city');
+});
+
+app.use(function (err, req, res, next) {
+  res.status(500).send({type: err.name, message: err.message});
+});
+
+// Listening to a network port
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+
+
+PM2: When running a program from the console, the program automatically terminates when you close the console of it the computer restarts. 
+- Daemon - need to register program as this to keep it running after a shutdown. Term comes from the idea of something that is always there working in the background.
+
+PM2 commands:
+- pm2 ls - list all of the hosted node processes
+- pm2 monit - visual monitor
+- pm2 start index.js -n simon - add a new process with an explicit name
+- pm2 start index.js -n startup -- 4000 - add a new process with an explicit name and port parameter
+- pm2 stop simon - stop a process
+- pm2 restart simon - restart a process
+- pm2 delete simon - delete a process from being hosted
+- pm2 delete all - delete all processes
+- pm2 save - save the current processes across reboot
+- pm2 restart all - reload all of the processes
+- pm2restart simon --update-env - reload process and update the node version to the current environment definition
+- pm2 update - reload pm2
+- pm2 start env.js --watch --ignore-watch="node_modules" - automatically reload service when index.js changes
+- pm2 describe simon - describe detailed process information
+- pm2 - startup - displays the command to run to keep PM2 running after a reboot
+- pm2 logs simon - display process logs
+- pm2 env 0 - desplay environment variables for process. Use pm2 ls to get the process ID
+
+
+TDD: Test Driven Development, automated testing is good. 
+Selenuim - introduced in 2004 as the first popular tool to automate the browser. Known to be flaky and slow. Test fails in unpredictable and unreproducible ways
+State of JS - has statistics on how popular frameworks are
+Playwright - backed by mycrosoft, works well with VS code, runs as a Node.js process, considered one of the least flaky
+- Demonstration of playwright:
+  <body>
+    <p id="welcome" data-testid="msg">Hello world</p>
+    <button onclick="changeWelcome()">change welcome</button>
+    <script>
+      function changeWelcome() {
+        const welcomeEl = document.querySelector('#welcome');
+        welcomeEl.textContent = 'I feel welcomed';
+      }
+    </script>
+  </body>
+
+  npm init playwright@latest
+
+  import { test, expect } from '@playwright/test';
+
+  test('testWelcomeButton', async ({ page }) => {
+    // Navigate to the welcome page
+    await page.goto('http://localhost:5500/');
+
+    // Get the target element and make sure it is in the correct starting state
+    const hello = page.getByTestId('msg');
+    await expect(hello).toHaveText('Hello world');
+
+    // Press the button
+    const changeBtn = page.getByRole('button', { name: 'change welcome' });
+    await changeBtn.click();
+
+    // Expect that the change happened correctly
+    await expect(hello).toHaveText('I feel not welcomed');
+  });
+
+Jest - testing package that works well with Express driven services.
+- Demonstration of Jest:
+  mkdir testJest
+  cd testJest
+  npm init -y
+  npm install express
+  code .
+
+- server.js:
+  const express = require('express');
+  const app = express();
+
+  app.use(express.json());
+
+  // Endpoints
+  app.get('/store/:storeName', (req, res) => {
+    res.send({ name: req.params.storeName });
+  });
+
+  app.put('/store/:storeName', (req, res) => {
+    req.body.updated = true;
+    res.send(req.body);
+  });
+
+  module.exports = app;
+
+- index.js:
+  const app = require('./server');
+
+  const port = 8080;
+  app.listen(port, function () {
+    console.log(`Listening on port ${port}`);
+  });
+
+
+
+
+
+Storage services: bad idea to store directly on the server because:
+- Server has limited drive space. If the server runs out of drive space, the entire application fails
+- Consider the server as ephemeral or temporary. It can be trown away and replaced by a copt at any time. If you store files on the server, then the server has state that connot be easily replaced
+- Need backup copes of the application and user files. If there is only 1 copy of the files on the server, they will disappear when the server disappears, and you must always assume that the server will disappear.
+
+AWS S3: most popular storage
+- Has unlimited capacity
+- Only pay for the storage that you use
+- Optimized for global access
+- Keeps multiple redundant copies of every file
+- Can version the files
+- Is performant
+- Supports metadata tags
+- Can make the files publically available to the application
+- Can keep files private and only accessible to the applicaiton
+
+
+Data services: Web application commonly store application and user data persistently. SQL databased are a good deneral purpose data service solution, but starting around 2012, specialty data services that better support document, graph, JSON, time, sequence, and key-value pair data began to take significant roles in applications from majoy compabies. Services are often called NoSQL solutions because they do not use the general purpose relational database paradigms popularized by SQL databases.
+
+List of services available:
+- MySQL - relational queries
+- Redis - memory cached objects
+- Elastic search - ranked free text
+- MongoDB - JSON objects
+- DynamoDB - key value pairs
+- NEO4J - graph based data
+- InfluxDB - time series data
+
+MongoDB queries:
+// find all houses
+db.house.find();
+
+// find houses with two or more bedrooms
+db.house.find({ beds: { $gte: 2 } });
+
+// find houses that are available with less than three beds
+db.house.find({ status: 'available', beds: { $lt: 3 } });
+
+// find houses with either less than three beds or less than $1000 a night
+db.house.find({ $or: [(beds: { $lt: 3 }), (price: { $lt: 1000 })] });
+
+// find houses with the text 'modern' or 'beach' in the summary
+db.house.find({ summary: /(modern|beach)/i });
+
+
+
+Authorization services: some include OAuth SAML, and OIDC. They support concepts like SSO (Single Sign On) and Federated Login. SSO allows a user to use the same credentials for multiple web applications. Federated login allows a user to log in once and then the authentication token is reused to automatically log the user into multiple websites. 
+
+
+Account creation and login: Need a way for users to uniquely identify themselves. Usually requires a two service endpoint. One to initially create an authentication credential and a second to authenticate or login on future visits. Once a user is authenticated we can control access to other endpoints. For example, web sites often have a getMe endpoint that gives information about the currently authenticated user. Need to implement this endpoint to demonstrate that the authentication is actually working correctly.
+
+Create authentication endpoint:
+- Takes an email and password and returns a cookie containing the authentication token and user ID. If the email already exists it returns a 409 (conflict) status code
+  POST /auth/create HTTP/2
+  Content-Type: application/json
+  {
+    "email":"marta@id.com",
+    "password":"toomanysecrets"
+  }
+
+  HTTP/2 200 OK
+  Content-Type: application/json
+  Set-Cookie: auth=tokenHere
+  {
+    "id":"337"
+  }
+
+Login authentication endpoint:
+- Takes an email and password and returns a cookie containing the authentication token and use ID. IF the email does not exist of the password is bad it returns a 401 (unauthorized) status code
+  POST /auth/login HTTP/2
+  Content-Type: application/json
+  {
+    "email":"marta@id.com",
+    "password":"toomanysecrets"
+  }
+
+  HTTP/2 200 OK
+  Content-Type: application/json
+  Set-Cookie: auth=tokenHere
+  {
+    "id":"337"
+  }
+
+GetMe endpoint:
+- Uses the authentication token stored in the cookie to look up and return information about the authenticated user. If the token or user do not exist it returns a 401 (unauthorized) status code
+  GET /user/me HTTP/2
+  Cookie: auth=tokenHere
+
+  HTTP/2 200 OK
+  Content-Type: application/json
+  {
+    "email":"marta@id.com"
+  }
+
+Web service:
+- web service example using Express
+  const express = require('express');
+  const app = express();
+
+  app.post('/auth/create', async (req, res) => {
+    res.send({ id: 'user@id.com' });
+  });
+
+  app.post('/auth/login', async (req, res) => {
+    res.send({ id: 'user@id.com' });
+  });
+
+  const port = 8080;
+  app.listen(port, function () {
+    console.log(`Listening on port ${port}`);
+  });
+
+Handling requests example:
+app.use(express.json());
+
+app.post('/auth/create', (req, res) => {
+  res.send({
+    id: 'user@id.com',
+    email: req.body.email,
+    password: req.body.password,
+  });
+});
+
+curl -X POST localhost:8080/auth/create -H 'Content-Type:application/json' -d '{"email":"marta@id.com", "password":"toomanysecrets"}'
+
+{"id":"user@id.com","email":"marta@id.com","password":"toomanysecrets"}
+
+- Can change the code to add a check to see if we already have a user with that email address. If we do, then we immediately return a 409 (conflict) status code. Otherwise we create a new user and return the user ID
+  app.post('/auth/create', async (req, res) => {
+    if (await getUser(req.body.email)) {
+      res.status(409).send({ msg: 'Existing user' });
+    } else {
+      const user = await createUser(req.body.email, req.body.password);
+      res.send({
+        id: user._id,
+      });
+    }
+  });
+
+Securing passwords: used bycrypt to create a very secure one-way hash of the password.
+const bcrypt = require('bcrypt');
+
+async function createUser(email, password) {
+  // Hash the password before we insert it into the database
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await collection.insertOne(user);
+
+  return user;
+}
+
+Passing authentication tokens: uses HTTP cookies with the cookie-parser package to provide middleware for cookies.
+- httpOnly - tells the browser to not allow JavaScript running on the browser to read the cookie
+- secure - requires HTTPS to be used when sending the cookie back to the server
+- sameSite - will only return the cookie to the domain that generated it
+
+const cookieParser = require('cookie-parser');
+
+// Use the cookie parser middleware
+app.use(cookieParser());
+
+apiRouter.post('/auth/create', async (req, res) => {
+  if (await DB.getUser(req.body.email)) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await DB.createUser(req.body.email, req.body.password);
+
+    // Set the cookie
+    setAuthCookie(res, user.token);
+
+    res.send({
+      id: user._id,
+    });
+  }
+});
+
+function setAuthCookie(res, authToken) {
+  res.cookie('token', authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
+
+Login endpoint:
+- The loging authorization endpoint needs to get the hashed password from the database, compare it to the proviced password using bycrypt.compare, and if successful set the authentication token in the cookie. If the password does not match, or there is no user with the given email, the endpoint returns a status 401 (unauthorized)
+app.post('/auth/login', async (req, res) => {
+  const user = await getUser(req.body.email);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      setAuthCookie(res, user.token);
+      res.send({ id: user._id });
+      return;
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+GetMe endpoint:
+- The implement, we get the ser object from the database by querying on the authentication token. If there is not an authentication token, or there is no user with that token, we return status 401 (unauthorized)
+app.get('/user/me', async (req, res) => {
+  authToken = req.cookies['token'];
+  const user = await collection.findOne({ token: authToken });
+  if (user) {
+    res.send({ email: user.email });
+    return;
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+Final code of the login section:
+const { MongoClient } = require('mongodb');
+const uuid = require('uuid');
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const app = express();
+
+const userName = 'holowaychuk';
+const password = 'express';
+const hostname = 'mongodb.com';
+
+const url = `mongodb+srv://${userName}:${password}@${hostname}`;
+const client = new MongoClient(url);
+const collection = client.db('authTest').collection('user');
+
+app.use(cookieParser());
+app.use(express.json());
+
+// createAuthorization from the given credentials
+app.post('/auth/create', async (req, res) => {
+  if (await getUser(req.body.email)) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await createUser(req.body.email, req.body.password);
+    setAuthCookie(res, user.token);
+    res.send({
+      id: user._id,
+    });
+  }
+});
+
+// loginAuthorization from the given credentials
+app.post('/auth/login', async (req, res) => {
+  const user = await getUser(req.body.email);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      setAuthCookie(res, user.token);
+      res.send({ id: user._id });
+      return;
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+// getMe for the currently authenticated user
+app.get('/user/me', async (req, res) => {
+  authToken = req.cookies['token'];
+  const user = await collection.findOne({ token: authToken });
+  if (user) {
+    res.send({ email: user.email });
+    return;
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+function getUser(email) {
+  return collection.findOne({ email: email });
+}
+
+async function createUser(email, password) {
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await collection.insertOne(user);
+
+  return user;
+}
+
+function setAuthCookie(res, authToken) {
+  res.cookie('token', authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
+
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+
+- Examples of curls. -c and -b tell curl to store and use cookies with the given file
+curl -X POST localhost:8080/auth/create -H 'Content-Type:application/json' -d '{"email":"지안@id.com", "password":"toomanysecrets"}'
+
+{"id":"639bb9d644416bf7278dde44"}
+
+curl -c cookie.txt -X POST localhost:8080/auth/login -H 'Content-Type:application/json' -d '{"email":"지안@id.com", "password":"toomanysecrets"}'
+
+{"id":"639bb9d644416bf7278dde44"}
+
+curl -b cookie.txt localhost:8080/user/me
+
+{"email":"지안@id.com"}
+
+
+
+WebSocket: HTTP is based on a client-server architecture. A client always initiates the request and the server responds. Need many applications for notifications, distrubuted task processing, peer-to-peer communication, or asynchronous events that need communication that is initiated by two or more connected devides. In 2011 the communication protocol WebSocket was created to solve the limitation of the client/server model. WebSocket is fully duplexed so after the initial connection is made from a client, using vanilla HTTP, and then upgraded by the server to a WebSocket connection, the relationship changes to a peer-to-peer connection where either party can efficiently send data at any time. WebSocket connections are only between 2 parties so the server acts as an intermediary in which each peer connects to the server and the server forwards messages amongst the peers.
+
+Creating a WebSocket conversation:
+const socket = new WebSocket('ws://localhost:9900');
+
+socket.onmessage = (event) => {
+  console.log('received: ', event.data);
+};
+
+socket.send('I am listening');
+
+const { WebSocketServer } = require('ws');
+
+Example 2:
+const wss = new WebSocketServer({ port: 9900 });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    const msg = String.fromCharCode(...data);
+    console.log('received: %s', msg);
+
+    ws.send(`I heard you say "${msg}"`);
+  });
+
+  ws.send('Hello webSocket');
+});
+
+
+Chat client: HTML for the client provides an input for the user's name, an input for creating messages, and an element to display the messages that are sent and received.
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Chat</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="name">
+      <fieldset id="name-controls">
+        <legend>My Name</legend>
+        <input id="my-name" type="text" />
+      </fieldset>
+    </div>
+
+    <fieldset id="chat-controls" disabled>
+      <legend>Chat</legend>
+      <input id="new-msg" type="text" />
+      <button onclick="sendMessage()">Send</button>
+    </fieldset>
+    <div id="chat-text"></div>
+  </body>
+  <script src="chatClient.js"></script>
+</html>
+
+DOM interaction: We do not want to be able to send messages if the user has not specified a name, so we add an event listener on the name input and disable the chat controls if the name is ever empty.
+const chatControls = document.querySelector('#chat-controls');
+const myName = document.querySelector('#my-name');
+myName.addEventListener('keyup', (e) => {
+  chatControls.disabled = myName.value === '';
+});
+
+When a user presses the enther key in the message input we want to send the message over the socket. We do this by selecting the DOM element with the new-msg ID and adding a listener that watches for the Enter keystroke.
+const input = document.querySelector('#new-msg');
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    sendMessage();
+  }
+});
+
+When Enter is pressed the sendMessage function is called. This selects the text out of the new-msg element and the name out of the my-name element and sends that over the WebSocket. The values of the message element is then cleared so that it is ready for the next message.
+function sendMessage() {
+  const msgEl = document.querySelector('#new-msg');
+  const msg = msgEl.value;
+  if (!!msg) {
+    appendMsg('me', 'me', msg);
+    const name = document.querySelector('#my-name').value;
+    socket.send(`{"name":"${name}", "msg":"${msg}"}`);
+    msgEl.value = '';
+  }
+}
+
+WebSocket connection: Want to support both secure and non-secure WebSocket connections. Use the window.location.protocol variable which represents the current protocol. If it is non-secure HTTP then we set the WebSocket protocol to be non-secure WebSocket (ws) otherwise we use secure WebSocket (wss). Use that to then connect the WebSocket to the same location that we loaded the HTML from by referencing the window.location.host variable. Can notify the user that chat is ready by listening to the onopen event and appending some text to the display using the appendMsg function created earlier.
+// Adjust the webSocket protocol to what is being used for HTTP
+const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+const socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+
+// Display that we have opened the webSocket
+socket.onopen = (event) => {
+  appendMsg('system', 'websocket', 'connected');
+};
+
+When it receives a message from a peer it displays it using the appendMsg function
+socket.onmessage = async (event) => {
+  const text = await event.data.text();
+  const chat = JSON.parse(text);
+  appendMsg('friend', chat.name, chat.msg);
+};
+
+If the WebSocket closes for any reason we also display that to the user and disable the controls
+socket.onclose = (event) => {
+  appendMsg('system', 'websocket', 'disconnected');
+  document.querySelector('#name-controls').disabled = true;
+  document.querySelector('#chat-controls').disabled = true;
+};
+
+Web service: is established using a simple Express application. We serve up our client HTML, CSS, and JavaScript files using the static middleware
+const { WebSocketServer } = require('ws');
+const express = require('express');
+const app = express();
+
+// Serve up our webSocket client HTML
+app.use(express.static('./public'));
+
+const port = process.argv.length > 2 ? process.argv[2] : 3000;
+server = app.listen(port, () => {
+  console.log(`Listening on ${port}`);
+});
+
+WebSocket server: Different from a simple connection, instead of letting the WebSocketServer control both the HTTP connection and the upgrading to WebSocket, we want to use the HTTP connection that Express is providing and handle the upgrade to WebSocket ourselves. This is done by specifying the noServer option when creating the  WebSocketServer and then handling the upgrade notification that occurs when a client requests the upgrade of the protocol from HTTP to WebSocket
+// Create a websocket object
+const wss = new WebSocketServer({ noServer: true });
+
+// Handle the protocol upgrade from HTTP to WebSocket
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, function done(ws) {
+    wss.emit('connection', ws, request);
+  });
+});
+
+Forwarding messages: When the WebSocket server we can use the connection, message, and close events to forward messages between peers. On connection we insert an object representing the connection into a list of all connections from the chat peers. Then when a message is received we loop through the peer connections and forward it onto everyone excpet the peer who initiated the request. Finally we remove a connection from the peer connection list when it is closed.
+// Keep track of all the connections so we can forward messages
+let connections = [];
+
+wss.on('connection', (ws) => {
+  const connection = { id: connections.length + 1, alive: true, ws: ws };
+  connections.push(connection);
+
+  // Forward messages to everyone except the sender
+  ws.on('message', function message(data) {
+    connections.forEach((c) => {
+      if (c.id !== connection.id) {
+        c.ws.send(data);
+      }
+    });
+  });
+
+  // Remove the closed connection so we don't try to forward anymore
+  ws.on('close', () => {
+    connections.findIndex((o, i) => {
+      if (o.id === connection.id) {
+        connections.splice(i, 1);
+        return true;
+      }
+    });
+  });
+});
+
+Keeping connections alive: If no data is sent across, WebSocket connections close automatically. To prevent that the WebSocket protocol supports the ability to send a ping message to see if the peer is still there and receive a pong respons to indicate the affirmative. Use the setInterval to send a ping every 10 seconds to each peer connection and clear any connections that did not response to the previous ping.
+setInterval(() => {
+  connections.forEach((c) => {
+    // Kill any connection that didn't respond to the ping last time
+    if (!c.alive) {
+      c.ws.terminate();
+    } else {
+      c.alive = false;
+      c.ws.ping();
+    }
+  });
+}, 10000);
+
+In the connection handler we listen for the pong response and mark the connection as alive.
+// Respond to pong messages by marking the connection alive
+ws.on('pong', () => {
+  connection.alive = true;
+});
+
+
+Web frameworks: make the job of writing web applications easier by providing tools for completing common application tasks. This includes modularizing code, creating single page applications, simplifying reactivity, and supporting diverse hardward devices. Some frameworks take things beyond the standard web technologies (HTML, CSS, JavaScript) and create new hybrid file formats that combine things like HTML and JavaScrit into a single file. Examples include React JSX, Vue SFC, and Svelte files. Abstracting away the core web file formats puts the focus on functional compenents rather than files.
+
+Examples of each:
+Vue - combines elements of HTML, CSS, and JavaScript into a single file. HTML is representated by a template element that can be aggregated into other templates.
+
+SFC - 
+<script>
+  export default {
+    data() {
+      return {
+        name: 'world',
+      };
+    },
+  };
+</script>
+
+<style>
+  p {
+    color: green;
+  }
+</style>
+
+<template>
+  <p>Hello {{ name }}!</p>
+</template>
+
+Svelte - also combines HTML, CSS, and JavaScript into a single file. Difference is that it requiers a transpiler to generate browser-ready code instead of a runtime virtual DOM
+<script>
+  let name = 'world';
+</script>
+
+<style>
+  p {
+    color: green;
+  }
+</style>
+
+<p>Hello {name}!</p>
+
+React - combines JavaScript and HTML into its component format. CSS must be declared outside of the JSX file. The comonent itself highly leverages the functionality of JavaScript and can be represented as a function or class.
+
+JSX - 
+import 'hello.css';
+
+const Hello = () => {
+  let name = 'world';
+
+  return <p>Hello {name}</p>;
+};
+
+CSS - 
+p {
+  color: green;
+}
+
+Angular component - defines what JavaScript, HTML, and CSS are combined together. Keeps a fairly strong separation of files that are usually grouped together in a directory rather than using the single file representation
+JS - 
+@Component({
+  selector: 'app-hello-world',
+  templateUrl: './hello-world.component.html',
+  styleUrls: ['./hello-world.component.css'],
+})
+export class HelloWorldComponent {
+  name: string;
+  constructor() {
+    this.name = 'world';
+  }
+}
+
+HTML - 
+<p>hello {{name}}</p>
+
+CSS - 
+p {
+  color: green;
+}
+
+
+
+
+
+
+React: powerful web programming frameowrk. Name comes from its focus on making reactive web page components that automatically update based on user interactions or changes in the underlying data. Created by Jordan Walke and used at Facebook in 2011. Abstracts HTML into a JavaScript variant called JSX. JSX is converted into valid HTML and JavaScript using a preprocessor called Babel. 
+Example: This:
+const i = 3;
+const list = (
+  <ol class='big'>
+    <li>Item {i}</li>
+    <li>Item {3 + i}</li>
+  </ol>
+);
+
+Converts to JavaScript with Babel:
+const i = 3;
+const list = React.createElement(
+  'ol',
+  { class: 'big' },
+  React.createElement('li', null, 'Item ', i),
+  React.createElement('li', null, 'Item ', 3 + i)
+);
+
+- The React.createElement fuction will then generate DOM elements and monitor the data they represent for changes. When a change is discovered, React will trigger dependent changes.
+
+Components: Allows modularization of the funcitonality of the application. Allows the underlying code to directly represent the components that a user interacts with. Also enable code reuse as common application components often show up repeatedly.
+
+Render function: One of the primary purposes of a component is to generate the user interface. This is done with the component's render function. Whatever is returened from the render function is inserted into the component HTML element. 
+
+Example: JSX file containing a React component element named Demo would cause React to load the Demo component, call the render function, and insert the result into the place of the Demo element
+
+JSX:
+<div>
+  Component: <Demo />
+</div>
+
+Notice that Demo is not a valid HTML element. The transpiler will replace this tage witht he resulting rendered HTML
+React component:
+function Demo() {
+  const who = 'world';
+  return <b>Hello {who}</b>;
+}
+
+Resulting HTML:
+<div>Component: <b>Hello world</b></div>
+
+Properties: React components also allow you to pass information to them in the form of element properties. The component receives the properties in its constructor and then can display them when it renders
+JSX:
+<div>Component: <Demo who="Walke" /><div>
+
+React component:
+function Demo(props) {
+  return <b>Hello {props.who}</b>;
+}
+
+Resulting HTML:
+<div>Component: <b>Hello Walke</b></div>
+
+State: In addition to properties, a component can have internal state. Component state is created by calling the React.useState hook functions. The useState function returns a variable that contains the current state and a function to update that state. The following example creates a state variable called clicked and toggles the click state in the updateClicked function that gets called when the paragraph text is clicked.
+const Clicker = () => {
+  const [clicked, updateClicked] = React.useState(false);
+
+  const onClicked = (e) => {
+    updateClicked(!clicked);
+  };
+
+  return <p onClick={(e) => onClicked(e)}>clicked: {`${clicked}`}</p>;
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+
+You can use JSX without a function. A simple variable representing JSX will work anyplace you would otherwise provide a component.
+const hello = <div>Hello</div>;
+
+ReactDOM.render(hello, document.getElementById('root'));
+
+Class style components: Although function style is preferred React also supports class style components. React is moving away from these and they should not be used. Example of an equivalent class style component of the above code.
+class Clicker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      clicked: false,
+    };
+  }
+  onClicked() {
+    this.setState({
+      clicked: !this.state.clicked,
+    });
+  }
+  render() {
+    return <p onClick={(e) => this.onClicked(e)}>clicked: {`${this.state.clicked}`}</p>;
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+
+Reactivity: A component's properties and state are used by the React framework to dertermine the reactivity of the interface. Reactivity controls how a component reacts to actions taken by the user or events that happen within the application. Whenever a component's state or preperties change, the render function for the component and all of its dependent component render functions are called.
+Example of completed component:
+function App() {
+  return (
+    <div>
+      Function Style Component: <Demo who='function' color='yellow' />
+    </div>
+  );
+}
+
+const Demo = ({ who, initialColor }) => {
+  const [color, setColor] = React.useState(initialColor);
+  const [outlook, setOutlook] = React.useState('beautiful');
+
+  function changeOutlook() {
+    setOutlook(outlook === 'exciting' ? 'beautiful' : 'exciting');
+  }
+
+  function changeColor() {
+    var randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    setColor('#' + randomColor);
+  }
+
+  return (
+    <div className='component' onMouseOver={changeColor} style={{ background: color }}>
+      <p>
+        Hello {outlook} {who}
+      </p>
+      <button onClick={changeOutlook}>change</button>
+    </div>
+  );
+};
+
+
+
+
+
+Toolchains: As web programming gets more complex it becomes necessary to abstract away some of the complexity with a series of tools. Some common funcitonal pieces in a web application tool chain include:
+- Code repository - Stores code in a shared, versioned, location
+- Linter - Removes, or warns, of non-idiomatic code usage
+- Prettier - formats code according to a shared standard
+- Transpiler - Compiles code into a different format. For example, from JSX to JavaScript, TypeScript to JavaScript, ot SCSS to CSS
+- Polyfill - generated backward compatible code for supporting old browser versions that do not support the latest standards
+- Bundler - packages code into bundles for delivery to the browser. This enables compatibility (for example with ES6 module support), or performace (with lazy loading)
+- Minfier - removes whitespace and renames variables in order to make code smaller and more efficient to deploy
+- Testing - automated tests at multiple levels to ensure correctness
+- Deployment - automated packaging and delivery of code from the development environment to the production environment
+
+Toolchain used for React project consists of GitHub as the code repository, Vite for JSX, TS, development, and debugging support, ESBuild for converting to ES6 modules and transpiling (with Babel underneath), Rollup for bundling and tree shaking, PostCSS for CSS transpiling, and finally a simple bash script (deployReact.sh) for deployment
+
+
+Reactivity: React enables reactivity with 3 major pieves of a React component: props, state, and render. When a component's JSX is rendered, React parses the JSX and creates a list of any references to the component's state or prop objects. React then monitors those objects and if it detects that they have changed it will call the component's render function so that the impact of the change is visualized. 
+Example: has 2 components (a parent <Survey/> and a child <Question/> component). The Survey has a stte named color, the Question has a property named color. The Survey passes its color state to the Question as a property. This means that any change to the Survey's color will also be reflected in the Question's color. The Question component also has a state named answer. The value of answer is displayed as part of the Question's content. The user can interact with this state through HTML radio input elements. When one of the inputs is changed the Question's onChange function is called and the answer state is updated to reflect the user's choice. This automatically causes the display of the answer to be updated. Do not make assumptions of when state is updated. Just because updateState is called does not mean that you can access the updated state on the next line of code. The update happens asynchronously, and therefore you never really know when it is going to happen and only know that it will eventually happen.
+// The Survey component
+const Survey = () => {
+  const [color, updateColor] = React.useState('#737AB0');
+
+  // When the color changes update the state
+  const onChange = (e) => {
+    updateColor(e.target.value);
+  };
+  return (
+    <div>
+      <h1>Survey</h1>
+      {/* Pass the Survey color state as a property to the Question.
+          When the color changes the Question property will also be updated and rendered. */}
+      <Question color={color} />
+
+      <p>
+        <span>Pick a color: </span>
+        {/* Pass the Survey color state as a property to the input element.
+            When the color changes, the input property will also be updated and rendered. */}
+        <input type='color' onChange={(e) => onChange(e)} value={color} />
+      </p>
+    </div>
+  );
+};
+
+// The Question component
+const Question = ({ color }) => {
+  const [answer, updateAnswer] = React.useState('pending...');
+
+  function onChange({ target }) {
+    updateAnswer(target.value);
+  }
+
+  return (
+    <div>
+      <span>Do you like this</span>
+      {/* Color rerendered whenever the property changes */}
+      <span style={{ color: color }}> color</span>?
+      <label>
+        <input type='radio' name='answer' value='yes' onChange={(e) => onChange(e)} />
+        Yes
+      </label>
+      <label>
+        <input type='radio' name='answer' value='no' onChange={(e) => onChange(e)} />
+        No
+      </label>
+      {/* Answer rerendered whenever the state changes */}
+      <p>Your answer: {answer}</p>
+    </div>
+  );
+};
+
+ReactDOM.render(<Survey />, document.getElementById('root'));
+
+Another example with text:
+// The Survey component
+const Survey = () => {
+  const [text, updateText] = React.useState('');
+
+  const onChange = (e) => {
+    updateText(e.target.value);
+  };
+  return (
+    <div>
+      <h1>Survey</h1>
+      <Question text={text} />
+
+      <p>
+        <span>Type some text: </span>
+        <input type='text' onChange={(e) => onChange(e)} placeholder='type here' />
+      </p>
+    </div>
+  );
+};
+
+// The Question component
+const Question = ({ text }) => {
+  return (
+    <div>
+      <p>You typed: {text}</p>
+    </div>
+  );
+};
+
+
+
+React hooks: React hooks allow React funtion style components to be able to do everything that a class style component can do and more. New features are also added to React as hooks. This makes function style components the preferred way of doing things in React. Have already seen use of hooks to declare and update state in a function component with the useState hook.
+function Clicker({initialCount}) {
+  const [count, updateCount] = React.useState(initialCount);
+  return <div onClick={() => updateCount(count + 1)}>Click count: {count}</div>;
+}
+
+ReactDOM.render(<Clicker initialCount={3} />, document.getElementById('root'));
+
+useEffect hook: allows you to represent lifecycle events. For example, if you want to run a function every time the component completes rendering, you could do the following.
+function UseEffectHookDemo() {
+  React.useEffect(() => {
+    console.log('rendered');
+  });
+
+  return <div>useEffectExample</div>;
+}
+
+ReactDOM.render(<UseEffectHookDemo />, document.getElementById('root'));
+
+You can also take action when the component cleans up by returning a cleanup function from the function registered with useEffect. In the example, everytime the component is clicked the state changes and so the component is rerendered. This causes both the cleanup function to be called in addition to the hook function. If the function was not rerendered then the only cleanup function would be called. This is useful when you want to create side effects for things such as tracking when a component is displayed or hidden, or creating and disposing of resources.
+function UseEffectHookDemo() {
+  const [count, updateCount] = React.useState(0);
+  React.useEffect(() => {
+    console.log('rendered');
+
+    return function cleanup() {
+      console.log('cleanup');
+    };
+  });
+
+  return <div onClick={() => updateCount(count + 1)}>useEffectExample {count}</div>;
+}
+
+ReactDOM.render(<UseEffectHookDemo />, document.getElementById('root'));
+
+
+Hook dependencies: You can control what triggers a useEffect hook by specifying its dependencies. In the following example we have 2 state variables, but we only want the useEffect hook to be called when the component is initially called and when the first variable is clicked. To accomplish this you pass an array of dependencies as a second parameter to the useEffect call. If you specify an empty array [] as the hook dependency then it is only called when the component is first rendered. Hooks can only be used in function style components and must be called at the top scope of the function. That means a hook cannot be called inside of a loop or conditional. This restriction ensures that hooks are always called in the same order when a component is rendered.
+function UseEffectHookDemo() {
+  const [count1, updateCount1] = React.useState(0);
+  const [count2, updateCount2] = React.useState(0);
+
+  React.useEffect(() => {
+    console.log(`count1 effect triggered ${count1}`);
+  }, [count1]);
+
+  return (
+    <ol>
+      <li onClick={() => updateCount1(count1 + 1)}>Item 1 - {count1}</li>
+      <li onClick={() => updateCount2(count2 + 1)}>Item 2 - {count2}</li>
+    </ol>
+  );
+}
+
+ReactDOM.render(<UseEffectHookDemo />, document.getElementById('root'));
+
+
+
+Router: A web framework router provides essential functionality for single-page applications. With a multiple-webpage application the headers, footers, navigation, and common components must either duplicate in each HTML page, or injected before the server sends the page to the browser. For single page application, the browser only loads one HTML page and then the JavaScript is used to manipulate the DOM and give it the appearance of multiple pages. The router defines the routes a user can take through the application, and automatically manipulates the DOM to display the appropriate framework components. React does not hace a standard router package, we used react-router-dom version 6. The simplified routing functionality of React-router-dom derives from the project react-router, do not confuse the 2.
+
+Example: Basic implementation of the router consists of a BrowserRouter component that encapsulates the entire application and controls the routing action. The Ling, or NavLink, component captures user navication evens and modifies what is rendered by the Routes component by matching up the to and path attributes.
+// Inject the router into the application root DOM element
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  // BrowserRouter component that controls what is rendered
+  // NavLink component captures user navigation requests
+  // Routes component defines what component is routed to
+  <BrowserRouter>
+    <div className='app'>
+      <nav>
+        <NavLink to='/'>Home</Link>
+        <NavLink to='/about'>About</Link>
+        <NavLink to='/users'>Users</Link>
+      </nav>
+
+      <main>
+        <Routes>
+          <Route path='/' element={<Home />} exact />
+          <Route path='/about' element={<About />} />
+          <Route path='/users' element={<Users />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
+        </Routes>
+      </main>
+    </div>
+  </BrowserRouter>
+);
+
+
+Vite: CLI (Command Line Interface), common way for configuring the project to take advantage of other technologies. Vite bundles code quickly, has great debugging support, and allows to easily support JSX, TypeScript, and different CSS flavors. 
+Vite files:
+- ./
+-   index.html - Primary page for the application. This is the starting point to load all of the JSX components beginning with main.jsx
+-   package.json - NPM definition for package dependencies and script commands. This is what maps npm run dev to actually start up Vite
+-   package-lock.json - Version constraints for included packages (do not edit this).
+-   vite.config.js - Configuration setting for Vite. Specifically this sets up React for development
+- ./public
+-   vite.svg - Vite logo for use as favicon and for display in the app 
+- ./src
+-   main.jsx - Entry point for code execution. This simply loads the App component found in App.jsx
+-   index.css - CSS for the entire application 
+-   App.jsx - JSX for top level application component. This displays the logs and implements the click counter
+-   App.css - CSS for the top level application component
+- ./src/assets
+-   react.svg - React logo for display in the app.
+
+The main files in the application are index.html, main.jsx, and App.jsx. The browser load index.html which provides the HTML element (#root) that the React application will be injected into. It also includes the script element to load main.jsx. Main.jsx creates the React application by associating the #root element witht eh App component found in App.jsx. This causes all of the component render functions to execute and the generated HTML, CSS, and JavaScript to be executed in index.html.
+
+JSX vs JS: The Vite CLI uses the .jsx extension for JSX files instead of the JavaScript .js. The Babel transpiler will work on either one, but some editor tools will work differently based on the extension. .jsx is the better one.
+
+Deploying a production release: npm run build, coping the resulting dist directory to the production.
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
